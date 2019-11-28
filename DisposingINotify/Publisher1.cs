@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Common;
 
-namespace DisposingINotify
+namespace DisposingINotify.Gui
 {
     public class Publisher1 : CPropertyChangedBase
     {

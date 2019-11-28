@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3 DisposingINotify.GUI", "DisposingINotify\3 DisposingINotify.GUI.csproj", "{AC438327-3AF9-43D3-B0E9-4AA1F676278E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3 DisposingINotify.Gui", "DisposingINotify\3 DisposingINotify.Gui.csproj", "{AC438327-3AF9-43D3-B0E9-4AA1F676278E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "6 Common", "Common\6 Common.csproj", "{CE30DE5A-3A4F-4230-BEE1-1A57D3CE3F55}"
 EndProject

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-namespace DisposingINotify
+namespace DisposingINotify.Gui
 {
     public class Subscriber2 : ICommandSource
     {

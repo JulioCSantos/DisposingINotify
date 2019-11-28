@@ -53,7 +53,7 @@ namespace Common
             return types;
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             notifierObjectDisposing?.Invoke(this, null);
             var handlersClone = handlers.Where(kv => kv.Key == this).Select(kv => kv.Value).ToList();

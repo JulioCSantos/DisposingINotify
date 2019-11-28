@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DisposingINotify.Gui.Properties {
+namespace DisposingINotify.Gui.Gui.Properties {
     using System;
     
     
