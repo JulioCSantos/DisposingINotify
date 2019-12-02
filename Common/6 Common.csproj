@@ -41,10 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CPropertyChangedBase.cs" />
+    <Compile Include="DictionaryExtensions.cs" />
+    <Compile Include="DisposableNotifiersBase.cs" />
     <Compile Include="DisposingINotifierObjectEventArgs.cs" />
     <Compile Include="DisposingINotifierObjectEventHandler.cs" />
-    <Compile Include="IDisposingINotifierObject.cs" />
+    <Compile Include="IDisposableObservableObjectBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

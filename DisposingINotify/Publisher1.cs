@@ -9,7 +9,7 @@ using Common;
 
 namespace DisposingINotify.Gui
 {
-    public class Publisher1 : CPropertyChangedBase
+    public class Publisher1 : DisposableNotifiersBase
     {
         //public event EventHandler NotifierObjectDisposing;
         //public event PropertyChangedEventHandler PropertyChanged;
