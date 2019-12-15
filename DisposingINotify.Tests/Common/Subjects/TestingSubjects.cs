@@ -37,8 +37,14 @@ namespace DisposingINotify.Tests.Common
             Publisher1.PropertyChanged += Publisher1_PropertyChanged;
         }
 
+        public void UnSubscribePublisher1() {
+            Publisher1.PropertyChanged -= Publisher1_PropertyChanged;
+        }
+
         private void Publisher1_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        { }
+        { Pub1PropertyChanged = true; }
+
+        public bool Pub1PropertyChanged { get; set; }
     }
 
     public class SubscriberSubject2
@@ -58,7 +64,13 @@ namespace DisposingINotify.Tests.Common
             Publisher2.PropertyChanged += Publisher2_PropertyChanged;
         }
 
-        private void Publisher1_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) { }
-        private void Publisher2_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) { }
+        private void Publisher1_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+            { Pub1PropertyChanged = true; }
+
+        public bool Pub1PropertyChanged { get; set; }
+
+        private void Publisher2_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+            { Pub2PropertyChanged = true; }
+        public bool Pub2PropertyChanged { get; set; }
     }
 }

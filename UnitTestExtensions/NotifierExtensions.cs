@@ -11,7 +11,7 @@ namespace UnitTestExtensions
     public static class NotifierExtensions
     {
         public static NotifyExpectation<T>
-            ShouldNotifyOn<T, TProperty>(this T owner,
+            NotifiesPropertyChanged<T, TProperty>(this T owner,
                 Expression<Func<T, TProperty>> propertyPicker)
             where T : INotifyPropertyChanged
         {
