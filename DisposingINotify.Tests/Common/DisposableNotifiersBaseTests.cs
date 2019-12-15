@@ -72,8 +72,16 @@ namespace DisposingINotify.Tests.Common
             //target = new PublisherSubject1();
             target.OneProperty = "Joe2";
             Assert.AreEqual(1, subj1.Pub1PropertyChanges);
-
         }
-
+        [TestMethod]
+        public void SubscriptionCountsTest2()
+        {
+            var subj1 = new SubscriberSubject1();
+            var target = subj1.Publisher1;
+            subj1.SubscribePublisher1();
+            Assert.AreEqual(1, target.GetSubscribersList().Count());
+            target.Dispose();
+            Assert.AreEqual(0, target.GetSubscribersList().Count());
+        }
     }
 }

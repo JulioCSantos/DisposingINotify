@@ -54,7 +54,6 @@
     <Compile Include="Common\TestingSubjects\SubscriberSubject2.cs" />
     <Compile Include="Common\TestingSubjects\PublisherSubject1.cs" />
     <Compile Include="Common\DisposableNotifiersBaseTests.cs" />
-    <Compile Include="Common\DictionaryExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

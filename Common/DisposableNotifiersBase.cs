@@ -12,15 +12,19 @@ namespace Common
     public abstract class DisposableNotifiersBase : IDisposableObservableObjectBase
     {
 
-        #region _handlersTypes
-        private readonly Dictionary<object, Dictionary<PropertyChangedEventHandler, object>> _handlersTypes = 
-            new Dictionary<object, Dictionary<PropertyChangedEventHandler, object>>();
-        #endregion _handlersTypes
+        //#region _handlersTypes
+        //private readonly Dictionary<object, Dictionary<PropertyChangedEventHandler, object>> _handlersTypes = 
+        //    new Dictionary<object, Dictionary<PropertyChangedEventHandler, object>>();
+        //#endregion _handlersTypes
 
-        #region _handlers
-        private readonly Dictionary<PropertyChangedEventHandler, Dictionary<object, PropertyChangedEventHandler>> _handlers =
-            new Dictionary<PropertyChangedEventHandler, Dictionary<object, PropertyChangedEventHandler>>();
-        #endregion _handlers
+        //#region _handlers
+        //private readonly Dictionary<PropertyChangedEventHandler, Dictionary<object, PropertyChangedEventHandler>> _handlers =
+        //    new Dictionary<PropertyChangedEventHandler, Dictionary<object, PropertyChangedEventHandler>>();
+        //#endregion _handlers
+
+        #region Delegates
+        public List<PropertyChangedEventHandler> Handlers = new List<PropertyChangedEventHandler>();
+        #endregion Delegates
 
         #region Events
         #region PropertyChanged
@@ -29,13 +33,15 @@ namespace Common
         public event PropertyChangedEventHandler PropertyChanged
         {
             add { _propertyChanged += value;
-                _handlersTypes.TryAdd(value.Target, value);
-                _handlers.TryAdd(value, value.Target);
+                Handlers.Add(value);
+                //_handlersTypes.TryAdd(value.Target, value);
+                //_handlers.TryAdd(value, value.Target);
             }
             remove {
                 if (_propertyChanged != null) _propertyChanged -= value;
-                _handlersTypes.TryRemove(value.Target, value);
-                _handlers.TryRemove(value, value.Target);
+                Handlers.Remove(value);
+                //_handlersTypes.TryRemove(value.Target, value);
+                //_handlers.TryRemove(value, value.Target);
             }
         }
         #endregion PropertyChanged
@@ -82,8 +88,14 @@ namespace Common
         #region IDisposable
         public void Dispose()
         {
-            notifierObjectDisposing?.Invoke(this, null);
-            _propertyChanged = delegate { };
+            var cancelEventArgs = new CancelEventArgs();
+            notifierObjectDisposing?.Invoke(this, cancelEventArgs);
+            //if (cancelEventArgs.Cancel == false) _propertyChanged = delegate { };
+
+            
+            Handlers.ForEach(dh => _propertyChanged -= dh);
+            Handlers.Clear();
+
             //var handlersClone = _handlersTypes.Where(kv => kv.Key == this).Select(kv => kv.Value).ToList();
             //handlersClone.ForEach(eh => PropertyChanged -= eh);
 
