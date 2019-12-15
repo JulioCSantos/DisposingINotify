@@ -1,6 +1,6 @@
 ﻿using Common;
 
-namespace DisposingINotify.Tests.Common
+namespace DisposingINotify.Tests.Common.TestingSubjects
 {
     public class PublisherSubject2 : DisposableNotifiersBase
     {

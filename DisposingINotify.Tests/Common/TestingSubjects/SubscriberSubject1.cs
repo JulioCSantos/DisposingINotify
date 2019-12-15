@@ -1,4 +1,4 @@
-﻿namespace DisposingINotify.Tests.Common
+﻿namespace DisposingINotify.Tests.Common.TestingSubjects
 {
     public class SubscriberSubject1
     {

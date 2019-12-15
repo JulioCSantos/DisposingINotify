@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
+using DisposingINotify.Tests.Common.TestingSubjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UnitTestExtensions;
 
 namespace DisposingINotify.Tests.Common
 {
@@ -27,7 +27,7 @@ namespace DisposingINotify.Tests.Common
             var target = subj1.Publisher1;
             subj1.SubscribePublisher1();
             Assert.IsFalse(subj1.Pub1PropertyChanged);
-            subj1.Publisher1.OneProperty = string.Empty;
+            target.OneProperty = string.Empty;
             Assert.IsTrue(subj1.Pub1PropertyChanged);
         }
 
@@ -38,20 +38,14 @@ namespace DisposingINotify.Tests.Common
             var target = subj1.Publisher1;
             subj1.SubscribePublisher1();
             Assert.IsFalse(subj1.Pub1PropertyChanged);
-            subj1.Publisher1.OneProperty = "Joe1";
+            target.OneProperty = "Joe1";
             Assert.IsTrue(subj1.Pub1PropertyChanged);
-            //Assert.IsTrue(subj1.Publisher1
-            //        .NotifiesPropertyChanged((p) => p.OneProperty)
-            //        .WhenTriggerInvoked(a => target.OneProperty = "Joe1")
-            //    );
+
             subj1.UnSubscribePublisher1();
             subj1.Pub1PropertyChanged = false;
-            subj1.Publisher1.OneProperty = "Joe2";
+            target.OneProperty = "Joe2";
             Assert.IsFalse(subj1.Pub1PropertyChanged);
 
-            //Assert.IsFalse(subj1.Publisher1
-            //    .NotifiesPropertyChanged((p) => p.OneProperty)
-            //    .WhenTriggerInvoked(a => target.OneProperty = "Joe2"));
         }
     }
 }
