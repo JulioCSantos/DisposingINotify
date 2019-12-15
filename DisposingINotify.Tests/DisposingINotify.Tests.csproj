@@ -49,7 +49,10 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\Subjects\TestingSubjects.cs" />
+    <Compile Include="Common\TestingSubjects\PublisherSubject2.cs" />
+    <Compile Include="Common\TestingSubjects\SubscriberSubject1.cs" />
+    <Compile Include="Common\TestingSubjects\SubscriberSubject2.cs" />
+    <Compile Include="Common\TestingSubjects\PublisherSubject1.cs" />
     <Compile Include="Common\DisposableNotifiersBaseTests.cs" />
     <Compile Include="Common\DictionaryExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
