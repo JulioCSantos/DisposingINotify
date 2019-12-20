@@ -38,7 +38,7 @@ namespace DisposingINotify.Gui
             Subscriber1.Publisher1.Dispose();
         }
 
-        public List<string> Delegates { get { return Subscriber1?.Publisher1?.GetSubscribersList()?.ToList() ?? new List<string> {"<none>"}; } }
+        public List<string> Delegates { get { return Subscriber1?.Publisher1?.GetMethodsNamesList()?.ToList() ?? new List<string> {"<none>"}; } }
         public List<Type> DelegatesTypes { get { return Subscriber1?.Publisher1?.GetSubscribersTypesList()?.ToList(); } }
     }
 }

@@ -12,19 +12,9 @@ namespace Common
     public abstract class DisposableNotifiersBase : IDisposableObservableObjectBase
     {
 
-        //#region _handlersTypes
-        //private readonly Dictionary<object, Dictionary<PropertyChangedEventHandler, object>> _handlersTypes = 
-        //    new Dictionary<object, Dictionary<PropertyChangedEventHandler, object>>();
-        //#endregion _handlersTypes
-
-        //#region _handlers
-        //private readonly Dictionary<PropertyChangedEventHandler, Dictionary<object, PropertyChangedEventHandler>> _handlers =
-        //    new Dictionary<PropertyChangedEventHandler, Dictionary<object, PropertyChangedEventHandler>>();
-        //#endregion _handlers
-
-        #region Delegates
+        #region Handlers
         public List<PropertyChangedEventHandler> Handlers = new List<PropertyChangedEventHandler>();
-        #endregion Delegates
+        #endregion Handlers
 
         #region Events
         #region PropertyChanged
@@ -32,27 +22,31 @@ namespace Common
         private PropertyChangedEventHandler _propertyChanged;
         public event PropertyChangedEventHandler PropertyChanged
         {
-            add { _propertyChanged += value;
-                Handlers.Add(value);
-                //_handlersTypes.TryAdd(value.Target, value);
-                //_handlers.TryAdd(value, value.Target);
+            add { _propertyChanged += value; Handlers.Add(value);
             }
             remove {
+                // ReSharper disable once DelegateSubtraction
                 if (_propertyChanged != null) _propertyChanged -= value;
                 Handlers.Remove(value);
-                //_handlersTypes.TryRemove(value.Target, value);
-                //_handlers.TryRemove(value, value.Target);
             }
         }
         #endregion PropertyChanged
 
+        #region DisposingNotifier
         // ReSharper disable once InconsistentNaming
-        private CancelEventHandler notifierObjectDisposing;
+        private CancelEventHandler DisposingNotifier;
         public event CancelEventHandler NotifierObjectDisposing
         {
-            add { notifierObjectDisposing += value; }
-            remove { notifierObjectDisposing -= value; }
+            add { DisposingNotifier += value; }
+            remove { DisposingNotifier -= value; }
         }
+        #endregion DisposingNotifier
+
+        #region NotifierDisposed
+
+        public event EventHandler NotifierDisposed;
+        #endregion NotifierDisposed
+
         #endregion Events
 
         [DebuggerStepThrough]
@@ -69,7 +63,7 @@ namespace Common
         }
 
         #region methods
-        public IEnumerable<string> GetSubscribersList() {
+        public IEnumerable<string> GetMethodsNamesList() {
             var names = GetInvocationList().Select(d => d.Method.Name).Distinct();
             return names;
         }
@@ -89,16 +83,17 @@ namespace Common
         public void Dispose()
         {
             var cancelEventArgs = new CancelEventArgs();
-            notifierObjectDisposing?.Invoke(this, cancelEventArgs);
-            //if (cancelEventArgs.Cancel == false) _propertyChanged = delegate { };
-
+            DisposingNotifier?.Invoke(this, cancelEventArgs);
+            if (cancelEventArgs.Cancel) return;
             
+            // ReSharper disable once DelegateSubtraction
             Handlers.ForEach(dh => _propertyChanged -= dh);
             Handlers.Clear();
 
-            //var handlersClone = _handlersTypes.Where(kv => kv.Key == this).Select(kv => kv.Value).ToList();
-            //handlersClone.ForEach(eh => PropertyChanged -= eh);
+            NotifierDisposed?.Invoke(this, null);
 
+            DisposingNotifier = delegate { }; //Clear event
+            NotifierDisposed = delegate { }; //Clear event
         }
         #endregion IDisposable
 
