@@ -10,8 +10,9 @@ using System.Threading.Tasks;
 
 namespace Common
 {
-    //https://stackoverflow.com/questions/25786964/how-do-i-cast-an-event-handler-delegate-to-one-with-a-different-signature
-    public abstract class DisposableNotifiersBase : IDisposableObservableObjectBase
+    ////https://stackoverflow.com/questions/25786964/how-do-i-cast-an-event-handler-delegate-to-one-with-a-different-signature
+    //public abstract class DisposableNotifiersBase : IDisposableNotifier
+    public abstract class DisposableNotifiersBase : DisposablePatternBase, INotifyPropertyChanged
     {
 
         #region Handlers
@@ -34,23 +35,23 @@ namespace Common
         }
         #endregion PropertyChanged
 
-        #region DisposingNotifier
-        // ReSharper disable once InconsistentNaming
-        private CancelEventHandler DisposingNotifier;
-        public event CancelEventHandler NotifierObjectDisposing
-        {
-            add { DisposingNotifier += value; }
-            remove { DisposingNotifier -= value; }
-        }
-        #endregion DisposingNotifier
+        //#region NotifierDisposing
+        //// ReSharper disable once InconsistentNaming
+        //private CancelEventHandler DisposingNotifier;
+        //public event CancelEventHandler NotifierDisposing
+        //{
+        //    add { DisposingNotifier += value; }
+        //    remove { DisposingNotifier -= value; }
+        //}
+        //#endregion NotifierDisposing
 
-        #region NotifierDisposed
-        private EventInfo _notifierDisposedEventInfo;
-        public EventInfo NotifierDisposedEventInfo {
-            get { return _notifierDisposedEventInfo ?? (_notifierDisposedEventInfo = this.GetType().GetEvent(nameof(NotifierDisposed))); }
-        }
-        public event EventHandler NotifierDisposed;
-        #endregion NotifierDisposed
+        //#region NotifierDisposed
+        //private EventInfo _notifierDisposedEventInfo;
+        //public EventInfo NotifierDisposedEventInfo {
+        //    get { return _notifierDisposedEventInfo ?? (_notifierDisposedEventInfo = this.GetType().GetEvent(nameof(NotifierDisposed))); }
+        //}
+        //public event EventHandler NotifierDisposed;
+        //#endregion NotifierDisposed
 
         #endregion Events
 
@@ -65,6 +66,17 @@ namespace Common
             prevValue = value;
             this.RaisePropertyChanged(propertyName);
             return true;
+        }
+
+
+        [DebuggerStepThrough]
+        protected virtual bool SetPropertyAndDispose<T>(ref T prevValue, T value, [CallerMemberName] string propertyName = null) 
+            where T : IDisposableNotifier
+        {
+            if (Equals(prevValue, value)) return false;
+            var isSet = SetProperty(ref prevValue, value, propertyName);
+            if (isSet) prevValue.Dispose();
+            return isSet;
         }
 
         #region methods
@@ -82,35 +94,15 @@ namespace Common
             if (_propertyChanged == null) return Enumerable.Empty<Delegate>();
             return _propertyChanged?.GetInvocationList();
         }
-        #endregion methods
 
-        #region IDisposable
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            var cancelEventArgs = new CancelEventArgs();
-            DisposingNotifier?.Invoke(this, cancelEventArgs);
-            if (cancelEventArgs.Cancel) return;
-            
             // ReSharper disable once DelegateSubtraction
             Handlers.ForEach(dh => _propertyChanged -= dh);
             Handlers.Clear();
-
-            //NotifierDisposed?.Invoke(this, null);
-
-            if (NotifierDisposed != null)
-            {
-                foreach (var @delegate in NotifierDisposed.GetInvocationList())
-                {
-                    NotifierDisposedEventInfo.RemoveEventHandler(this, @delegate);
-                    @delegate.DynamicInvoke(this, null);
-                }
-            }
-
-
-            DisposingNotifier = delegate { }; //Clear subscribers
-            NotifierDisposed = delegate { }; //Clear subscribers
         }
-        #endregion IDisposable
+
+        #endregion methods
 
     }
 

@@ -135,7 +135,7 @@ namespace DisposingINotify.Tests.Common
             Assert.AreEqual(1, target.GetMethodsNamesList().Count());
             var cancelHandlerInvoked = false;
             CancelEventHandler handler = (s, e) => { cancelHandlerInvoked = true; };
-            subj1.Publisher1.NotifierObjectDisposing += handler;
+            subj1.Publisher1.DisposingHandlers += handler;
             target.Dispose();
             Assert.IsTrue(cancelHandlerInvoked);
             Assert.AreEqual(0, target.GetMethodsNamesList().Count());
@@ -150,7 +150,7 @@ namespace DisposingINotify.Tests.Common
             Assert.AreEqual(1, target.GetMethodsNamesList().Count());
             var cancelHandlerInvoked = false;
             CancelEventHandler handler = (s, e) => { cancelHandlerInvoked = true; e.Cancel = true; };
-            subj1.Publisher1.NotifierObjectDisposing += handler;
+            subj1.Publisher1.DisposingHandlers += handler;
             target.Dispose();
             Assert.IsTrue(cancelHandlerInvoked);
             Assert.AreEqual(1, target.GetMethodsNamesList().Count());
@@ -266,7 +266,7 @@ namespace DisposingINotify.Tests.Common
             subj2.SubscribePublisher1();
             subj2.SubscribePublisher2();
             Assert.AreEqual(2, target.GetInvocationList().Count());
-            subj2.Publisher1.NotifierDisposed += (s, e) => { subj2.Publisher2 = null; };
+            subj2.Publisher1.DisposedHandlers += (s, e) => { subj2.Publisher2 = null; };
             subj2.Publisher1 = null;
             Assert.AreEqual(0, target.GetInvocationList().Count());
         }

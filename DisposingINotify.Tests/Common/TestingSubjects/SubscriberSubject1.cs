@@ -11,7 +11,6 @@
             set {
                 if (value == null) _publisher1.Dispose(); 
                 _publisher1 = value;
-
             }
         }
 

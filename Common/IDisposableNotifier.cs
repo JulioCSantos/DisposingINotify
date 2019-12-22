@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Common
 {
-    public interface IDisposableObservableObjectBase : INotifyPropertyChanged, IDisposable
+    public interface IDisposableNotifier : IDisposable
     {
-        event CancelEventHandler NotifierObjectDisposing;
+        event CancelEventHandler DisposingHandlers;
+        event EventHandler DisposedHandlers;
     }
 }
