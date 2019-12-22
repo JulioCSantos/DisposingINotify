@@ -7,8 +7,12 @@
 
         public PublisherSubject1 Publisher1
         {
-            get { return _publisher1 ?? (_publisher1 = new PublisherSubject1()); ; }
-            set { _publisher1 = value; }
+            get { return _publisher1 ?? (Publisher1 = new PublisherSubject1()); ; }
+            set {
+                if (value == null) _publisher1.Dispose(); 
+                _publisher1 = value;
+
+            }
         }
 
         public void SubscribePublisher1() {

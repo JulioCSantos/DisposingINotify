@@ -246,5 +246,29 @@ namespace DisposingINotify.Tests.Common
             Assert.AreEqual(1, subj2.Pub1PropertyChanges);
             Assert.AreEqual(1, subj2.Pub2PropertyChanges);
         }
+
+        [TestMethod]
+        public void NullSetTest1()
+        {
+            var subj1 = new SubscriberSubject1();
+            subj1.SubscribePublisher1();
+            var target = subj1.Publisher1;
+            Assert.AreEqual(1, target.GetInvocationList().Count());
+            subj1.Publisher1 = null;
+            Assert.AreEqual(0, target.GetInvocationList().Count());
+        }
+
+        [TestMethod]
+        public void NullSetTest2()
+        {
+            var subj2 = new SubscriberSubject2();
+            var target = subj2.Publisher1 = subj2.Publisher2 = new PublisherSubject1();
+            subj2.SubscribePublisher1();
+            subj2.SubscribePublisher2();
+            Assert.AreEqual(2, target.GetInvocationList().Count());
+            subj2.Publisher1.NotifierDisposed += (s, e) => { subj2.Publisher2 = null; };
+            subj2.Publisher1 = null;
+            Assert.AreEqual(0, target.GetInvocationList().Count());
+        }
     }
 }

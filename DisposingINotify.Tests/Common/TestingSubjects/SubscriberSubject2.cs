@@ -6,16 +6,24 @@
 
         public PublisherSubject1 Publisher1
         {
-            get { return _publisher1 ?? (_publisher1 = new PublisherSubject1()); ; }
-            set { _publisher1 = value; }
+            get { return _publisher1 ?? (Publisher1 = new PublisherSubject1()); ; }
+            set
+            {
+                if (value == null) _publisher1?.Dispose();
+                _publisher1 = value;
+            }
         }
 
         private PublisherSubject1 _publisher2;
 
         public PublisherSubject1 Publisher2
         {
-            get { return _publisher2 ?? (_publisher2 = new PublisherSubject1()); ; }
-            set { _publisher2 = value; }
+            get { return _publisher2 ?? (Publisher2 = new PublisherSubject1()); ; }
+            set
+            {
+                if (value == null) _publisher2?.Dispose();
+                _publisher2 = value;
+            }
         }
 
 

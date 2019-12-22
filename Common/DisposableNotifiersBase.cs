@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Common
 {
+    //https://stackoverflow.com/questions/25786964/how-do-i-cast-an-event-handler-delegate-to-one-with-a-different-signature
     public abstract class DisposableNotifiersBase : IDisposableObservableObjectBase
     {
 
@@ -43,7 +45,10 @@ namespace Common
         #endregion DisposingNotifier
 
         #region NotifierDisposed
-
+        private EventInfo _notifierDisposedEventInfo;
+        public EventInfo NotifierDisposedEventInfo {
+            get { return _notifierDisposedEventInfo ?? (_notifierDisposedEventInfo = this.GetType().GetEvent(nameof(NotifierDisposed))); }
+        }
         public event EventHandler NotifierDisposed;
         #endregion NotifierDisposed
 
@@ -90,10 +95,20 @@ namespace Common
             Handlers.ForEach(dh => _propertyChanged -= dh);
             Handlers.Clear();
 
-            NotifierDisposed?.Invoke(this, null);
+            //NotifierDisposed?.Invoke(this, null);
 
-            DisposingNotifier = delegate { }; //Clear event
-            NotifierDisposed = delegate { }; //Clear event
+            if (NotifierDisposed != null)
+            {
+                foreach (var @delegate in NotifierDisposed.GetInvocationList())
+                {
+                    NotifierDisposedEventInfo.RemoveEventHandler(this, @delegate);
+                    @delegate.DynamicInvoke(this, null);
+                }
+            }
+
+
+            DisposingNotifier = delegate { }; //Clear subscribers
+            NotifierDisposed = delegate { }; //Clear subscribers
         }
         #endregion IDisposable
 
