@@ -44,8 +44,8 @@
     <Compile Include="DisposableNotifiersBase.cs" />
     <Compile Include="DisposablePatternBase.cs" />
     <Compile Include="DisposingINotifierObjectEventArgs.cs" />
-    <Compile Include="DisposingINotifierObjectEventHandler.cs" />
     <Compile Include="IDisposableNotifier.cs" />
+    <Compile Include="INotifierBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

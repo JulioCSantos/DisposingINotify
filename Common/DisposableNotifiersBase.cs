@@ -10,9 +10,7 @@ using System.Threading.Tasks;
 
 namespace Common
 {
-    ////https://stackoverflow.com/questions/25786964/how-do-i-cast-an-event-handler-delegate-to-one-with-a-different-signature
-    //public abstract class DisposableNotifiersBase : IDisposableNotifier
-    public abstract class DisposableNotifiersBase : DisposablePatternBase, INotifyPropertyChanged
+    public abstract class DisposableNotifiersBase : DisposablePatternBase, INotifierBase
     {
 
         #region Handlers
@@ -34,25 +32,6 @@ namespace Common
             }
         }
         #endregion PropertyChanged
-
-        //#region NotifierDisposing
-        //// ReSharper disable once InconsistentNaming
-        //private CancelEventHandler DisposingNotifier;
-        //public event CancelEventHandler NotifierDisposing
-        //{
-        //    add { DisposingNotifier += value; }
-        //    remove { DisposingNotifier -= value; }
-        //}
-        //#endregion NotifierDisposing
-
-        //#region NotifierDisposed
-        //private EventInfo _notifierDisposedEventInfo;
-        //public EventInfo NotifierDisposedEventInfo {
-        //    get { return _notifierDisposedEventInfo ?? (_notifierDisposedEventInfo = this.GetType().GetEvent(nameof(NotifierDisposed))); }
-        //}
-        //public event EventHandler NotifierDisposed;
-        //#endregion NotifierDisposed
-
         #endregion Events
 
         [DebuggerStepThrough]
@@ -61,7 +40,7 @@ namespace Common
         }
 
         [DebuggerStepThrough]
-        protected virtual bool SetProperty<T>(ref T prevValue, T value, [CallerMemberName] string propertyName = null) {
+        public virtual bool SetProperty<T>(ref T prevValue, T value, [CallerMemberName] string propertyName = null) {
             if (Equals(prevValue, value)) return false;
             prevValue = value;
             this.RaisePropertyChanged(propertyName);
@@ -69,15 +48,16 @@ namespace Common
         }
 
 
-        [DebuggerStepThrough]
-        protected virtual bool SetPropertyAndDispose<T>(ref T prevValue, T value, [CallerMemberName] string propertyName = null) 
-            where T : IDisposableNotifier
-        {
-            if (Equals(prevValue, value)) return false;
-            var isSet = SetProperty(ref prevValue, value, propertyName);
-            if (isSet) prevValue.Dispose();
-            return isSet;
-        }
+        ////[DebuggerStepThrough]
+        //public virtual bool SetPropertyAndDispose<T>(ref T prevValue, T value, [CallerMemberName] string propertyName = null) 
+        //    //where T : IDisposableNotifier
+        //{
+        //    if (Equals(prevValue, value)) return false;
+        //    if (prevValue == null) return SetProperty(ref prevValue, value, propertyName); 
+        //    var disposableValue = prevValue as IDisposableNotifier;
+        //    disposableValue?.Dispose();
+        //    return true;
+        //}
 
         #region methods
         public IEnumerable<string> GetMethodsNamesList() {

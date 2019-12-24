@@ -178,7 +178,13 @@ namespace DisposingINotify.Tests.Common
         {
             var subj1 = new SubscriberSubject1();
             var subj2 = new SubscriberSubject2();
-            var target = subj1.Publisher1 = subj2.Publisher1 = new PublisherSubject1();
+            subj1.Publisher1 = new PublisherSubject1();
+            subj2.Publisher1 = subj1.Publisher1;
+            var target = subj1.Publisher1;
+
+            Assert.IsTrue(target == subj1.Publisher1);
+            Assert.IsTrue(subj1.Publisher1 == subj2.Publisher1);
+            Assert.IsTrue(target == subj2.Publisher1);
             subj1.SubscribePublisher1();
             subj2.SubscribePublisher1();
             Assert.AreEqual(0, subj1.Pub1PropertyChanges);
@@ -251,9 +257,12 @@ namespace DisposingINotify.Tests.Common
         public void NullSetTest1()
         {
             var subj1 = new SubscriberSubject1();
-            subj1.SubscribePublisher1();
+            subj1.Publisher1 = new PublisherSubject1();
             var target = subj1.Publisher1;
+            Assert.AreEqual(target.GetHashCode(), subj1.Publisher1.GetHashCode());
+            subj1.SubscribePublisher1();
             Assert.AreEqual(1, target.GetInvocationList().Count());
+            subj1.Publisher1.Dispose();
             subj1.Publisher1 = null;
             Assert.AreEqual(0, target.GetInvocationList().Count());
         }
@@ -267,8 +276,40 @@ namespace DisposingINotify.Tests.Common
             subj2.SubscribePublisher2();
             Assert.AreEqual(2, target.GetInvocationList().Count());
             subj2.Publisher1.DisposedHandlers += (s, e) => { subj2.Publisher2 = null; };
+            subj2.Publisher1.Dispose();
             subj2.Publisher1 = null;
             Assert.AreEqual(0, target.GetInvocationList().Count());
+        }
+
+        [TestMethod]
+        public void DisposeMultipleTimesTest1()
+        {
+            var subj2 = new SubscriberSubject2();
+            var target = subj2.Publisher1 = subj2.Publisher2 = new PublisherSubject1();
+            subj2.SubscribePublisher1();
+            subj2.SubscribePublisher2();
+            Assert.AreEqual(2, target.GetInvocationList().Count());
+            subj2.Publisher1.DisposedHandlers += (s, e) => { subj2.Publisher2 = null; };
+            subj2.Publisher1.Dispose();
+            subj2.Publisher1.Dispose();
+            subj2.Publisher1.Dispose();
+            subj2.Publisher1 = null;
+            Assert.AreEqual(0, target.GetInvocationList().Count());
+        }
+
+        [TestMethod]
+        public void SetToNullAfterDisposedTest1()
+        {
+            var subj2 = new SubscriberSubject2();
+            var target = subj2.Publisher1 = subj2.Publisher2 = new PublisherSubject1();
+            subj2.SubscribePublisher1();
+            subj2.SubscribePublisher2();
+            Assert.AreEqual(2, target.GetInvocationList().Count());
+            subj2.Publisher1.DisposedHandlers += (s, e) => { subj2.Publisher1 = null; subj2.Publisher2 = null; };
+            subj2.Publisher1.Dispose();
+            Assert.AreEqual(0, target.GetInvocationList().Count());
+            Assert.IsNull(subj2.Publisher1);
+            Assert.IsNull(subj2.Publisher2);
         }
     }
 }
